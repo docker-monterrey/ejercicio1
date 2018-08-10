@@ -1,0 +1,39 @@
+version: "3.6"
+
+networks:
+  frontend:
+  backend:
+
+services:
+  worker: &app
+    image: vovimayhem/ejercicio1:latest
+    command: sidekiq -c 1
+    networks:
+    - backend
+    environment: &app_env
+      DATABASE_URL: postgres://cerouno:YPo-V2G-8dQ-WBt@k8s-example-postgres.c0i94c6qteda.us-east-1.rds.amazonaws.com:5432/demo_01
+      REDIS_URL: redis://h:YiexxzAfT5pw@ec2-107-23-132-177.compute-1.amazonaws.com:6379/0
+      SECRET_KEY_BASE: a2b2d08d9485cabb434cd7e9ef501cd3e068e60bc5f35965705f0e6bf4b85584985962cf8fbd5820208bcd0bdcb2511e16b00b39630a8da6e787379b0dae3aeb
+
+    deploy: &app_deploy
+      resources:
+        reservations:
+          memory: "128M"
+        limits:
+          memory: "256M"
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        delay: 10s
+
+  web:
+    <<: *app
+    command: puma
+    ports:
+    - 80:3000
+    networks:
+    - frontend
+    - backend
+    environment:
+      <<: *app_env
+      PORT: 3000

@@ -3,7 +3,7 @@
 
 # Process only a known list of env vars that can filled by reading a file (i.e.
 # a docker secret):
-%w(DATABASE_URL REDIS_URL).each do |key_to_write|
+%w(SECRET_KEY_BASE DATABASE_URL REDIS_URL).each do |key_to_write|
   key_to_write_exists = ENV.key?(key_to_write)
 
   file_key = "#{key_to_write}_FILE"

@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+metadata:
+  name: web
+
+spec:
+  replicas: 1
+
+  template:
+
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - image: vovimayhem/ejercicio1:latest
+        name: web
+        env:
+         - name: SECRET_KEY_BASE
+           valueFrom:
+             secretKeyRef:
+               name: demo-secrets
+               key: secret_key_base
+         - name: DATABASE_URL
+           valueFrom:
+             secretKeyRef:
+               name: demo-secrets
+               key: database_url
+         - name: REDIS_URL
+           valueFrom:
+             secretKeyRef:
+               name: demo-secrets
+               key: redis_url
